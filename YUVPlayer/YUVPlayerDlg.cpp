@@ -69,7 +69,7 @@ CYUVPlayerDlg::CYUVPlayerDlg(CWnd *pParent /*=NULL*/)
     m_sZoomSize          = _T("100");
     m_sFrameRate         = _T("30");
     m_sStartFrameNr      = _T("1");
-    m_sBitFormat         = _T("10bit");
+    m_sBitFormat         = _T("8bit");
     //}}AFX_DATA_INIT
     // Note that LoadIcon does not require a subsequent DestroyIcon in Win32
     m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
@@ -657,11 +657,11 @@ int32 CYUVPlayerDlg::get_bit_ratio()
 
     switch (s32ItemIdx) {
     case 0:
-        u8BitFormat = 10;
+        u8BitFormat = 8;
         break;
 
     case 1:
-        u8BitFormat = 8;
+        u8BitFormat = 10;
         break;
 
     default:
