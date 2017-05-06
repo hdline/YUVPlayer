@@ -2,6 +2,13 @@
 #include "ChildDlg.h"
 #include "YUVPlayerDlg.h"
 #include "multithread.h"
+#include <algorithm>
+
+template <class T>
+T clipPixelTo8bit(const T &val)
+{
+    return std::min<T>(255, std::max<T>(0, val));
+}
 
 
 CChildDlg::CChildDlg(UINT nID, CWnd *pParent /*=NULL*/)
@@ -240,12 +247,9 @@ void CChildDlg::YV12_to_RGB24(Pel *pu8Y, Pel *pu8U, Pel *pu8V)
             }
 
             i   = k + x * 3;
-            for (j = 0; j < 3; j ++) {
-                if ((rgb[j] >= 0) && (rgb[j] <= 255)) {
-                    pRGBBuff[i + j]     = rgb[j];
-                } else {
-                    pRGBBuff[i + j]     = (rgb[j] < 0) ? 0 : 255;
-                }
+            for (j = 0; j < 3; j++) {
+                rgb[j] = clipPixelTo8bit(rgb[j]);
+                pRGBBuff[i + j] = (BYTE)rgb[j];
             }
         }
 
@@ -270,27 +274,14 @@ void CChildDlg::YUY2_to_RGB24(uint16 *pu8RGBData, uint16 *pu8YUVData)
             Y1 = *pu8YUVData++;
             V  = *pu8YUVData++;
 
-            R  = int32(1.164383 * (Y0 >> 2 - 16) + 1.596027 * (V >> 2 - 128));
-            G  = int32(1.164383 * (Y0 >> 2 - 16) - 0.812968 * (V >> 2 - 128) - 0.391762 * (U >> 2 - 128));
-            B  = int32(1.164383 * (Y0 >> 2 - 16) + 2.017232 * (U >> 2 - 128));
-            if (R < 0) {
-                R = 0;
-            }
-            if (R > 255) {
-                R = 255;
-            }
-            if (G < 0) {
-                G = 0;
-            }
-            if (G > 255) {
-                G = 255;
-            }
-            if (B < 0) {
-                B = 0;
-            }
-            if (B > 255) {
-                B = 255;
-            }
+            R = int32(1.164383 * (Y0 - 16) + 1.596027 * (V - 128));
+            G = int32(1.164383 * (Y0 - 16) - 0.812968 * (V - 128) - 0.391762 * (U - 128));
+            B = int32(1.164383 * (Y0 - 16) + 2.017232 * (U - 128));
+
+            R = clipPixelTo8bit(R);
+            G = clipPixelTo8bit(G);
+            B = clipPixelTo8bit(B);
+
             *pu8RGBData++ = (uint8)B;
             *pu8RGBData++ = (uint8)G;
             *pu8RGBData++ = (uint8)R;
@@ -298,24 +289,11 @@ void CChildDlg::YUY2_to_RGB24(uint16 *pu8RGBData, uint16 *pu8YUVData)
             R  = int32(1.164383 * (Y1 - 16) + 1.596027 * (V - 128));
             G  = int32(1.164383 * (Y1 - 16) - 0.812968 * (V - 128) - 0.391762 * (U - 128));
             B  = int32(1.164383 * (Y1 - 16) + 2.017232 * (U - 128));
-            if (R < 0) {
-                R = 0;
-            }
-            if (R > 255) {
-                R = 255;
-            }
-            if (G < 0) {
-                G = 0;
-            }
-            if (G > 255) {
-                G = 255;
-            }
-            if (B < 0) {
-                B = 0;
-            }
-            if (B > 255) {
-                B = 255;
-            }
+
+            R = clipPixelTo8bit(R);
+            G = clipPixelTo8bit(G);
+            B = clipPixelTo8bit(B);
+
             *pu8RGBData++ = (uint8)B;
             *pu8RGBData++ = (uint8)G;
             *pu8RGBData++ = (uint8)R;
