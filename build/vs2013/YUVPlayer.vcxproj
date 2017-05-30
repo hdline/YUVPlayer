@@ -278,7 +278,6 @@
     <ClCompile Include="..\..\YUVPlayer\JumpFrameDlg.cpp" />
     <ClCompile Include="..\..\YUVPlayer\MBInfoDlg.cpp" />
     <ClCompile Include="..\..\YUVPlayer\multithread.cpp" />
-    <ClCompile Include="..\..\YUVPlayer\scale.cpp" />
     <ClCompile Include="..\..\YUVPlayer\StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -304,7 +303,6 @@
     <ClInclude Include="..\..\YUVPlayer\MBInfoDlg.h" />
     <ClInclude Include="..\..\YUVPlayer\multithread.h" />
     <ClInclude Include="..\..\YUVPlayer\Resource.h" />
-    <ClInclude Include="..\..\YUVPlayer\scale.h" />
     <ClInclude Include="..\..\YUVPlayer\StdAfx.h" />
     <ClInclude Include="..\..\YUVPlayer\YUVPlayer.h" />
     <ClInclude Include="..\..\YUVPlayer\YUVPlayerDlg.h" />
