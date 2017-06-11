@@ -596,17 +596,10 @@ void CChildDlg::get_pixel_value()
 
     }
     for (j = 18; j < 18 + u8ChroPointNumY; j ++) {
-        for (i = 1; i < 1 + u8ChroPointNumX; i ++) {
-            if (u8BitFormat == 10) {
-                MBInfoDlg.pixelValue[j][i]  = pCb[(j - 18) * s32ChroWidth + (i - 1)];
-            }
-        }
-
-        for (i = 9; i < 9 + u8ChroPointNumX; i ++) {
-            if (u8BitFormat == 10) {
-                MBInfoDlg.pixelValue[j][i]   = pCr[(j - 18) * s32ChroWidth + (i - 9)];
-            }
-        }
+        for (i = 1; i < 1 + u8ChroPointNumX; i ++)          
+                MBInfoDlg.pixelValue[j][i]  = pCb[(j - 18) * s32ChroWidth + (i - 1)];                 
+        for (i = 9; i < 9 + u8ChroPointNumX; i ++)            
+                MBInfoDlg.pixelValue[j][i]  = pCr[(j - 18) * s32ChroWidth + (i - 9)];                    
     }
 }
 
