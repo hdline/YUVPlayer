@@ -370,7 +370,7 @@ void CYUVPlayerDlg::open_files()
 
 void CYUVPlayerDlg::drop_files(HDROP hDropInfo)
 {
-    int8    filePath[256];
+    TCHAR   filePath[2048];
     int32   s32fileNum;
     int32   i;
     int32   s32Ret;
@@ -406,7 +406,7 @@ void CYUVPlayerDlg::drop_files(HDROP hDropInfo)
     }
 
     for (i = 0; i < s32fileNum; i ++) {
-        DragQueryFile(hDropInfo, i, filePath, 256);
+        DragQueryFile(hDropInfo, i, filePath, sizeof(filePath) / sizeof(TCHAR));
         s32Ret   = creat_image_window(filePath);
         if (s32Ret == SUCCEEDED_YUVPlayer) {
             if (u8PlayMode == COMP_MODE) {
