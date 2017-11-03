@@ -117,8 +117,8 @@ int32 CImageDlg::initial()
         break;
 
     case YUV420:
-        u32ChroPicSize   = (s32Width >> 1) * (s32Height >> 1);
-        u32FrameSize = u32LumaPicSize + (u32ChroPicSize << 1);
+        u32ChroPicSize   = ((s32Width >> 1) * (s32Height >> 1)) * ((u8BitFormat > 8) + 1);
+        u32FrameSize     = u32LumaPicSize + (u32ChroPicSize << 1);
         s32FrameNum      = pFile->GetLength() / u32FrameSize;
 
         break;
@@ -465,13 +465,13 @@ int32 CImageDlg::read_one_frame(uint8 u8ImageMode)
 
     case YUV420: {
         if (u8BitFormat == 10) {
-            if (u32LumaPicSize << 1 != pFile->Read(pReadYUV[0], u32LumaPicSize << 1)) {
+            if (u32LumaPicSize != pFile->Read(pReadYUV[0], u32LumaPicSize)) {
                 return EOF_YUVPlayer;
             }
-            if (u32ChroPicSize << 1 != pFile->Read(pReadYUV[1], u32ChroPicSize << 1)) {
+            if (u32ChroPicSize != pFile->Read(pReadYUV[1], u32ChroPicSize)) {
                 return EOF_YUVPlayer;
             }
-            if (u32ChroPicSize << 1 != pFile->Read(pReadYUV[2], u32ChroPicSize << 1)) {
+            if (u32ChroPicSize != pFile->Read(pReadYUV[2], u32ChroPicSize)) {
                 return EOF_YUVPlayer;
             }
 

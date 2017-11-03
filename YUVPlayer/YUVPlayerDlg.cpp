@@ -473,7 +473,7 @@ int32 CYUVPlayerDlg::creat_image_window(CString CurrFilePath)
     pNewImg->s32ZoomWidth       = s32ZoomWidth;
     pNewImg->s32ZoomHeight      = s32ZoomHeight;
     pNewImg->pCriticalSection   = &(m_CriticalSection);
-    pNewImg->u32LumaPicSize     = s32Width * s32Height;
+    pNewImg->u32LumaPicSize     = s32Width * s32Height * ((u8BitFormat > 8) + 1);
     pNewImg->s32MBXNum          = (s32Width + 15) >> 4;
     pNewImg->s32MBYNum          = (s32Height + 15) >> 4;
 
