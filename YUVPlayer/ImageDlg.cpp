@@ -209,6 +209,8 @@ void CImageDlg::rotate_image(Pel *pSrcY, Pel *pSrcU, Pel *pSrcV)
     Pel    *pu8DstU;
     Pel    *pu8DstV;
 
+    uint32 num_pixels_chro = u32ChroPicSize / ((u8BitFormat > 8) + 1);
+    uint32 num_pixels_luma = u32LumaPicSize / ((u8BitFormat > 8) + 1);
 
     if (s16RotateAngle == 0) {
         pOrigYUV[0] = pSrcY;
@@ -224,8 +226,8 @@ void CImageDlg::rotate_image(Pel *pSrcY, Pel *pSrcU, Pel *pSrcV)
             pu8SrcU = pSrcU + (s32SrcWidth >> 1);
             pu8SrcV = pSrcV + (s32SrcWidth >> 1);
             for (j = 0; j < (s32SrcHeight >> 1); j ++) {
-                pu8DstU = pRotaYUV[1] + u32ChroPicSize - j;
-                pu8DstV = pRotaYUV[2] + u32ChroPicSize - j;
+                pu8DstU = pRotaYUV[1] + num_pixels_chro - j;
+                pu8DstV = pRotaYUV[2] + num_pixels_chro - j;
                 for (i = 0; i < (s32SrcWidth >> 1); i ++) {
                     pu8DstU[0]   = pu8SrcU[-i];
                     pu8DstV[0]   = pu8SrcV[-i];
@@ -239,7 +241,7 @@ void CImageDlg::rotate_image(Pel *pSrcY, Pel *pSrcU, Pel *pSrcV)
         case YUV400:
             pu8SrcY = pSrcY + s32SrcWidth - 1;
             for (j = 0; j < s32SrcHeight; j ++) {
-                pu8DstY = pRotaYUV[0] + u32LumaPicSize - j - 1;
+                pu8DstY = pRotaYUV[0] + num_pixels_luma - j - 1;
 
                 for (i = 0; i < s32SrcWidth; i ++) {
                     pu8DstY[0]   = pu8SrcY[-i];
@@ -258,8 +260,8 @@ void CImageDlg::rotate_image(Pel *pSrcY, Pel *pSrcU, Pel *pSrcV)
         case YUV420:
             pu8SrcU = pSrcU;
             pu8SrcV = pSrcV;
-            pu8DstU = pRotaYUV[1] + u32ChroPicSize - 1;
-            pu8DstV = pRotaYUV[2] + u32ChroPicSize - 1;
+            pu8DstU = pRotaYUV[1] + num_pixels_chro - 1;
+            pu8DstV = pRotaYUV[2] + num_pixels_chro - 1;
             for (j = 0; j < (s32SrcHeight >> 1); j ++) {
                 for (i = 0; i < (s32SrcWidth >> 1); i ++) {
                     pu8DstU[-i]  = pu8SrcU[i];
@@ -273,7 +275,7 @@ void CImageDlg::rotate_image(Pel *pSrcY, Pel *pSrcU, Pel *pSrcV)
             }
         case YUV400:
             pu8SrcY = pSrcY;
-            pu8DstY = pRotaYUV[0] + u32LumaPicSize - 1;
+            pu8DstY = pRotaYUV[0] + num_pixels_luma - 1;
             for (j = 0; j < s32SrcHeight; j ++) {
                 for (i = 0; i < s32SrcWidth; i ++) {
                     pu8DstY[-i]  = pu8SrcY[i];
@@ -292,8 +294,8 @@ void CImageDlg::rotate_image(Pel *pSrcY, Pel *pSrcU, Pel *pSrcV)
             pu8SrcU = pSrcU;
             pu8SrcV = pSrcV;
             for (j = 0; j < (s32SrcHeight >> 1); j ++) {
-                pu8DstU = pRotaYUV[1] + u32ChroPicSize - (s32SrcHeight >> 1) + j;
-                pu8DstV = pRotaYUV[2] + u32ChroPicSize - (s32SrcHeight >> 1) + j;
+                pu8DstU = pRotaYUV[1] + num_pixels_chro - (s32SrcHeight >> 1) + j;
+                pu8DstV = pRotaYUV[2] + num_pixels_chro - (s32SrcHeight >> 1) + j;
                 for (i = 0; i < (s32SrcWidth >> 1); i ++) {
                     pu8DstU[0]   = pu8SrcU[i];
                     pu8DstV[0]   = pu8SrcV[i];
@@ -307,7 +309,7 @@ void CImageDlg::rotate_image(Pel *pSrcY, Pel *pSrcU, Pel *pSrcV)
         case YUV400:
             pu8SrcY = pSrcY;
             for (j = 0; j < s32SrcHeight; j ++) {
-                pu8DstY = pRotaYUV[0] + u32LumaPicSize - s32SrcHeight + j;
+                pu8DstY = pRotaYUV[0] + num_pixels_luma - s32SrcHeight + j;
 
                 for (i = 0; i < s32SrcWidth; i ++) {
                     pu8DstY[0]   = pu8SrcY[i];
@@ -507,6 +509,9 @@ int32 CImageDlg::read_one_frame(uint8 u8ImageMode)
     mirror_image(pOrigYUV[0], pOrigYUV[1], pOrigYUV[2]);
     color_space_convert(u8ImageMode);
 
+    if (Temp_Read[0] != NULL) {
+        free(Temp_Read[0]);
+    }
     return SUCCEEDED_YUVPlayer;
 }
 
@@ -527,21 +532,16 @@ int32 CImageDlg::jump_to_frame(uint8 u8ImageMode, int32 s32JumpFrameNr)
 {
     int32   s32Ret;
     int32   s32MaxFrameNum;
-
+    ULONGLONG frame_pos = u32FrameSize;
 
     bEOFFlag         = FALSE;
     bEOHFlag         = FALSE;
     bForwardOK       = TRUE;
     bBackwardOK      = TRUE;
 
-    pFile->Seek(0, CFile::begin);
     s32CurrFrameNr   = s32JumpFrameNr;
-    s32MaxFrameNum   = 0X7FFFFFFF / u32FrameSize;
-    while (s32JumpFrameNr > s32MaxFrameNum) {
-        pFile->Seek(s32MaxFrameNum * u32FrameSize, CFile::current);
-        s32JumpFrameNr  -= s32MaxFrameNum;
-    }
-    pFile->Seek((s32JumpFrameNr - 1) * u32FrameSize, CFile::current);
+    frame_pos *= (s32JumpFrameNr - 1);
+    pFile->Seek(frame_pos, CFile::begin);
     s32Ret  = show_one_frame(u8ImageMode, TRUE);
 
     return s32Ret;
