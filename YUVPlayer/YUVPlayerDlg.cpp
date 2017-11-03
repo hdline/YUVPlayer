@@ -1185,7 +1185,8 @@ void CYUVPlayerDlg::backward_one_step()
             pCurrImg->bForwardOK     = TRUE;
             if (pCurrImg->bEOHFlag == FALSE) {
                 if ((pCurrImg->s32CurrFrameNr - 1) >= 1) {
-                    pCurrImg->pFile->Seek(-2 * pCurrImg->u32FrameSize, CFile::current);
+                    LONGLONG seek_pos = (LONGLONG)(-2) * (LONGLONG)(pCurrImg->u32FrameSize);
+                    pCurrImg->pFile->Seek(seek_pos, CFile::current);
                     pCurrImg->s32CurrFrameNr --;
                     pCurrImg->show_one_frame(u8ImageMode, TRUE);
                     pCurrImg->show_macroblock_info();
@@ -1242,7 +1243,8 @@ void CYUVPlayerDlg::backward_multistep()
             pCurrImg->bForwardOK     = TRUE;
             if (pCurrImg->bBackwardOK == TRUE) {
                 if ((pCurrImg->s32CurrFrameNr - 5) >= 1) {
-                    pCurrImg->pFile->Seek(-6 * pCurrImg->u32FrameSize, CFile::current);
+                    LONGLONG seek_pos = (LONGLONG)(-6) * (LONGLONG)(pCurrImg->u32FrameSize);
+                    pCurrImg->pFile->Seek(seek_pos, CFile::current);
                     pCurrImg->s32CurrFrameNr    -= 5;
                     pCurrImg->show_one_frame(u8ImageMode, TRUE);
                     pCurrImg->show_macroblock_info();
