@@ -32,7 +32,8 @@ uint32 play_video(LPVOID pParam)
 
                 if (pMainDlg->u8EOHNum != pMainDlg->s8ImgNum) {
                     if ((pCurrImg->s32CurrFrameNr - 1) >= 1) {
-                        pCurrImg->pFile->Seek(-2 * pCurrImg->u32FrameSize, CFile::current);
+                        LONGLONG seek_pos = (LONGLONG)(-2) * (LONGLONG)(pCurrImg->u32FrameSize);
+                        pCurrImg->pFile->Seek(seek_pos, CFile::current);
                         pCurrImg->s32CurrFrameNr --;
                         SendMessage(pCurrImg->m_hWnd, WM_MYMESSAGE_1, pMainDlg->u8ImageMode, TRUE);
 
