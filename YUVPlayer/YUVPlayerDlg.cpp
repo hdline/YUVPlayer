@@ -168,7 +168,11 @@ BOOL CYUVPlayerDlg::OnInitDialog()
     SetIcon(m_hIcon, FALSE);        // Set small icon
 
     // TODO: Add extra initialization here
-    SetWindowText("YUVPlayer 1.4.3, revised by luofl (large file) and leimeng (10bit)");
+    if (sizeof(void *) == 8) {
+        SetWindowText("YUVPlayer 1.4.3 x64, reviser: luofl(large file) & leimeng(10bit)");
+    } else {
+        SetWindowText("YUVPlayer 1.4.3 x86, reviser: luofl(large file) & leimeng(10bit)");
+    }
     //++ 初始化临界区
     CCriticalSection::initial(&m_CriticalSection);
     //++ 打开配置文件，读入历史参数
