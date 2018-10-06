@@ -58,13 +58,16 @@ int32 CChildDlg::malloc_memory()
     uint32  u32LumaBuffSize;
     uint32  u32ChroBuffSize;
     uint32  u32MemorySize;
-
+    uint32  u32FrameSize;
+    Pel default_pel_val = 1 << (u8BitFormat - 1);
+    int i;
 
     u32LumaBuffSize = ((u32LumaPicSize + 3) >> 2) << 2;
     u32ChroBuffSize = ((u32ChroPicSize + 3) >> 2) << 2;
-    u32MemorySize = u32LumaBuffSize + (u32ChroBuffSize << 1);   //++ 读入的原始 YUV 图像
-    u32MemorySize += u32LumaBuffSize + (u32ChroBuffSize << 1);  //++ 镜像缓冲
-    u32MemorySize += u32LumaBuffSize + (u32ChroBuffSize << 1);  //++ 旋转缓冲
+    u32FrameSize = u32LumaBuffSize + (u32ChroBuffSize << 1);
+    u32MemorySize = u32FrameSize;   //++ 读入的原始 YUV 图像
+    u32MemorySize += u32FrameSize;  //++ 镜像缓冲
+    u32MemorySize += u32FrameSize;  //++ 旋转缓冲
     u32MemorySize += u32LumaPicSize;    //++ 用于显示的 YUV 图像亮度分量
     u32MemorySize += u32ChroPicSize;    //++ 用于显示的 YUV 图像色度分量
     //u32MemorySize += (((s32Width * 3 + 3) >> 2) << 2) * s32Height;    //++ RGB 内存空间
@@ -87,7 +90,9 @@ int32 CChildDlg::malloc_memory()
     pRotaYUV[2] = pRotaYUV[1] + u32ChroBuffSize;
     pDisplayLuma = pRotaYUV[2] + u32ChroBuffSize;
     pDisplayChro = pDisplayLuma + u32LumaPicSize;
-    memset(pYUVBuff, 128, u32MemorySize);
+    for (i = 0; i < u32FrameSize; i++) {
+        pYUVBuff[i] = default_pel_val;
+    }
     hloc = GlobalAlloc(GMEM_ZEROINIT | GMEM_MOVEABLE, sizeof(BITMAPINFOHEADER) + (sizeof(RGBQUAD) * 256));
     if (NULL == hloc) {
         free(pYUVBuff);

@@ -459,8 +459,18 @@ int32 CImageDlg::read_one_frame(uint8 u8ImageMode)
 
     switch (u8SampleFormat) {
     case YUV400:
-        if (u32LumaPicSize != pFile->Read(pReadYUV[0], u32LumaPicSize)) {
-            return EOF_YUVPlayer;
+        if (u8BitFormat == 10) {
+            if (u32LumaPicSize != pFile->Read(pReadYUV[0], u32LumaPicSize)) {
+                return EOF_YUVPlayer;
+            }
+        } else {
+            if (u32LumaPicSize != pFile->Read(Temp_Read[0], u32LumaPicSize)) {
+                return EOF_YUVPlayer;
+            }
+            /*********************加8位转换为16位***************************/
+            for (int i = 0; i < u32LumaPicSize; i++) {
+                pReadYUV[0][i] = (WORD)Temp_Read[0][i];
+            }
         }
 
         break;
@@ -476,8 +486,6 @@ int32 CImageDlg::read_one_frame(uint8 u8ImageMode)
             if (u32ChroPicSize != pFile->Read(pReadYUV[2], u32ChroPicSize)) {
                 return EOF_YUVPlayer;
             }
-
-            break;
         } else {
             if (u32LumaPicSize != pFile->Read(Temp_Read[0], u32LumaPicSize)) {
                 return EOF_YUVPlayer;
@@ -497,8 +505,8 @@ int32 CImageDlg::read_one_frame(uint8 u8ImageMode)
                 pReadYUV[1][i] = (WORD)Temp_Read[1][i];
                 pReadYUV[2][i] = (WORD)Temp_Read[2][i];
             }
-            break;
         }
+        break;
 
     }
     default:
