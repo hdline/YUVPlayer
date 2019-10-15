@@ -16,7 +16,7 @@ typedef     unsigned __int64    uint64;
 #define     FALSE               0
 
 #define     ABS(X)              (((X) > 0 ) ? (X) : (-X))
-#define     BIN(X)              (((X) == 0) ? 0 : 255)
+#define     BIN(X, binVal)      (((X) == 0) ? 0 : binVal)
 
 //======= 本程序支持打开的最多图像个数 =======
 #define     MAX_IMAGE_NUM           10

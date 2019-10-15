@@ -268,6 +268,7 @@ void CDiffPicDlg::get_one_frame(uint8 u8ImageMode)
     pYUV1 = pMainDlg->pImage[0]->pReadYUV;
     pYUV2 = pMainDlg->pImage[1]->pReadYUV;
 
+    const Pel binVal = (1 << u8BitFormat) - 1;
 
     switch (u8SampleFormat) {
     case YUV420:
@@ -275,7 +276,7 @@ void CDiffPicDlg::get_one_frame(uint8 u8ImageMode)
         for (j = 0; j < (s32Height >> 1); j++) {
             for (i = 0; i < (s32Width >> 1); i++) {
                 Pel s32Diff = pYUV2[1][u32Offset] - pYUV1[1][u32Offset];
-                pOrigYUV[1][u32Offset] = u8DiffMode ? ABS(s32Diff) : BIN(s32Diff);
+                pOrigYUV[1][u32Offset] = u8DiffMode ? ABS(s32Diff) : BIN(s32Diff, binVal);
                 bSameFlag &= (!s32Diff);
                 u32Offset++;
             }
@@ -286,7 +287,7 @@ void CDiffPicDlg::get_one_frame(uint8 u8ImageMode)
             for (i = 0; i < (s32Width >> 1); i++) {
                 Pel s32Diff = pYUV2[2][u32Offset] - pYUV1[2][u32Offset];
 
-                pOrigYUV[2][u32Offset] = u8DiffMode ? ABS(s32Diff) : BIN(s32Diff);
+                pOrigYUV[2][u32Offset] = u8DiffMode ? ABS(s32Diff) : BIN(s32Diff, binVal);
                 bSameFlag &= (!s32Diff);
                 u32Offset++;
             }
@@ -298,7 +299,7 @@ void CDiffPicDlg::get_one_frame(uint8 u8ImageMode)
             for (i = 0; i < s32Width; i++) {
                 Pel s32Diff = pYUV2[0][u32Offset] - pYUV1[0][u32Offset];
 
-                pOrigYUV[0][u32Offset] = u8DiffMode ? ABS(s32Diff) : BIN(s32Diff);
+                pOrigYUV[0][u32Offset] = u8DiffMode ? ABS(s32Diff) : BIN(s32Diff, binVal);
                 bSameFlag &= (!s32Diff);
                 u32Offset++;
             }
