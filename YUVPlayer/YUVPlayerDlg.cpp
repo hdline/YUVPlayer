@@ -169,9 +169,9 @@ BOOL CYUVPlayerDlg::OnInitDialog()
 
     // TODO: Add extra initialization here
     if (sizeof(void *) == 8) {
-        SetWindowText("YUVPlayer 1.4.3 x64, reviser: luofl(large file) & leimeng(10bit)");
+        SetWindowText("YUVPlayer 1.4.4 x64, reviser: luofl(large file) & leimeng(10bit)");
     } else {
-        SetWindowText("YUVPlayer 1.4.3 x86, reviser: luofl(large file) & leimeng(10bit)");
+        SetWindowText("YUVPlayer 1.4.4 x86, reviser: luofl(large file) & leimeng(10bit)");
     }
     //++ 初始化临界区
     CCriticalSection::initial(&m_CriticalSection);
